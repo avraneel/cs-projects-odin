@@ -28,6 +28,9 @@ test.set("moon", "silver");
 console.log(test.length());
 console.log(test.capacity);
 console.log(`Load now: ${test.length() / test.capacity}`);
+console.log(test.keys());
+console.log(test.values());
+console.log(test.entries());
 
 test.set("kite", "new year");
 test.set("dog", "pet");
