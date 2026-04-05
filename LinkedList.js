@@ -1,4 +1,9 @@
-import { Node } from "./Node.js";
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.nextNode = null;
+  }
+}
 
 export class LinkedList {
   constructor(value) {
