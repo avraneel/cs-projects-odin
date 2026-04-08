@@ -72,6 +72,22 @@ export class Tree {
     }
     return root;
   }
+
+  includes(value) {
+    let curr = this.root;
+
+    while (curr !== null) {
+      if (curr.data === value) {
+        return true;
+      } else if (value < curr.data) {
+        curr = curr.left;
+      } else if (value > curr.data) {
+        curr = curr.right;
+      }
+    }
+
+    return false;
+  }
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -84,7 +100,16 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
 };
 
+const nat = Array();
+
+for (let i = 1; i <= 100; i++) {
+  nat.push(i);
+}
+
 const bst = new Tree([23, 43, 55, 56, 73, 91]);
 const bst2 = new Tree([1, 5, 9, 14, 23, 27]);
-prettyPrint(bst.root);
-prettyPrint(bst2.root);
+const bst3 = new Tree(nat);
+prettyPrint(bst3.root);
+//prettyPrint(bst2.root);
+console.log(bst.includes(73));
+console.log(bst.includes(54));
