@@ -106,6 +106,25 @@ export class Tree {
       curr.right = new Node(value);
     }
   }
+
+  deleteItem(root, value) {
+    if (root === null) return root;
+
+    if (value < root.data) {
+      root.left = this.deleteItem(root.left, value);
+    } else if (value > root.data) {
+      root.right = this.deleteItem(root.right, value);
+    } else {
+      // Node with 0 or 1 child, as if node == null then node.left/right also = null
+      if (root.left === null) {
+        return root.right;
+      }
+      if (root.right === null) {
+        return root.left;
+      } else {
+      }
+    }
+  }
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -118,10 +137,14 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
 };
 
+const successor = (node) => {};
+
 const bst = new Tree([23, 43, 55, 56, 73, 91]);
 const bst2 = new Tree([1, 5, 9, 14, 23, 27]);
 //prettyPrint(bst2.root);
 console.log(bst.includes(73));
 console.log(bst.includes(54));
 bst.insert(44);
+prettyPrint(bst.root);
+bst.deleteItem(bst.root, 44);
 prettyPrint(bst.root);
