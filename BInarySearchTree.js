@@ -21,17 +21,17 @@ class Subtree {
 export class Tree {
   constructor(arr) {
     this.arr = arr;
-    this.root = this.buildTreeQueue(0, arr.length - 1);
+    this.root = this.buildTree(0, arr.length - 1);
   }
 
-  buildTreeRecursive(left, right) {
+  buildTree(left, right) {
     if (left > right) return null;
 
     const mid = Math.floor((left + right) / 2);
     const root = new Node(this.arr[mid]);
 
-    root.left = this.buildTreeRecursive(left, mid - 1);
-    root.right = this.buildTreeRecursive(mid + 1, right);
+    root.left = this.buildTree(left, mid - 1);
+    root.right = this.buildTree(mid + 1, right);
 
     return root;
   }
@@ -122,9 +122,23 @@ export class Tree {
       if (root.right === null) {
         return root.left;
       } else {
+        // Node with both child
+        const suc = successor(root);
+        root.data = suc.data;
+        root.right = this.deleteItem(root.right, suc.data);
       }
     }
+    return root;
   }
+}
+
+function successor(root) {
+  let curr = root.right;
+  while (curr.left != null) {
+    curr = curr.left;
+  }
+
+  return curr;
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -137,8 +151,6 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
 };
 
-const successor = (node) => {};
-
 const bst = new Tree([23, 43, 55, 56, 73, 91]);
 const bst2 = new Tree([1, 5, 9, 14, 23, 27]);
 //prettyPrint(bst2.root);
@@ -146,5 +158,6 @@ console.log(bst.includes(73));
 console.log(bst.includes(54));
 bst.insert(44);
 prettyPrint(bst.root);
-bst.deleteItem(bst.root, 44);
+console.log(successor(bst.root));
+bst.deleteItem(bst.root, 55);
 prettyPrint(bst.root);
