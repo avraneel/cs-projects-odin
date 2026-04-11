@@ -20,18 +20,17 @@ class Subtree {
 
 export class Tree {
   constructor(arr) {
-    this.arr = arr;
-    this.root = this.buildTree(0, arr.length - 1);
+    this.root = this.buildTree(arr, 0, arr.length - 1);
   }
 
-  buildTree(left, right) {
+  buildTree(arr, left, right) {
     if (left > right) return null;
 
     const mid = Math.floor((left + right) / 2);
-    const root = new Node(this.arr[mid]);
+    const root = new Node(arr[mid]);
 
-    root.left = this.buildTree(left, mid - 1);
-    root.right = this.buildTree(mid + 1, right);
+    root.left = this.buildTree(arr, left, mid - 1);
+    root.right = this.buildTree(arr, mid + 1, right);
 
     return root;
   }
@@ -168,13 +167,13 @@ export class Tree {
     return result;
   }
 
-  inOrderForEach(root, callback) {
+  inOrderForEach(root, callback, result) {
     if (root === null) {
       return;
     }
-    this.inOrderForEach(root.left, callback);
-    console.log(callback(root.data));
-    this.inOrderForEach(root.right, callback);
+    this.inOrderForEach(root.left, callback, result);
+    result.push(callback(root.data));
+    this.inOrderForEach(root.right, callback, result);
   }
 
   preOrderForEach(root, callback) {
@@ -193,6 +192,12 @@ export class Tree {
     this.postOrderForEach(root.left, callback);
     this.postOrderForEach(root.right, callback);
     console.log(callback(root.data));
+  }
+
+  rebalance() {
+    const arr = [];
+    this.inOrderForEach(this.root, (x) => x, arr);
+    this.root = this.buildTree(arr, 0, arr.length - 1);
   }
 }
 
@@ -255,10 +260,9 @@ prettyPrint(bst.root);
 //console.log(successor(bst.root));
 //bst.deleteItem(bst.root, 55);
 //prettyPrint(bst.root);
-let res = [];
-// const re = bst.levelOrderForEach((x) => {
-//   return x;
-// });
+const res = [];
+bst.inOrderForEach(bst.root, (x) => x, res);
+console.log(res);
 
 // const re2 = bst.inOrderForEach(bst.root, (x) => {
 //   return x;
@@ -270,3 +274,5 @@ let res = [];
 // console.log(re);
 // console.log(height(bst, 55));
 console.log(isBalanced(bst.root));
+bst.rebalance();
+prettyPrint(bst.root);
