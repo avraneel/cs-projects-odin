@@ -150,12 +150,31 @@ export class Tree {
     return result;
   }
 
-  inOrderForEach(root, callback, result) {
-    if (root.left === null && root.right === null) {
-      return root;
+  inOrderForEach(root, callback) {
+    if (root === null) {
+      return;
     }
+    this.inOrderForEach(root.left, callback);
+    console.log(callback(root.data));
+    this.inOrderForEach(root.right, callback);
+  }
 
-    this.inOrderForEach(root.left);
+  preOrderForEach(root, callback) {
+    if (root === null) {
+      return;
+    }
+    console.log(callback(root.data));
+    this.preOrderForEach(root.left, callback);
+    this.preOrderForEach(root.right, callback);
+  }
+
+  postOrderForEach(root, callback) {
+    if (root === null) {
+      return;
+    }
+    this.postOrderForEach(root.left, callback);
+    this.postOrderForEach(root.right, callback);
+    console.log(callback(root.data));
   }
 }
 
@@ -180,16 +199,23 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const bst = new Tree([23, 43, 55, 56, 73, 91]);
 const bst2 = new Tree([1, 5, 9, 14, 23, 27]);
-//prettyPrint(bst2.root);
-console.log(bst.includes(73));
-console.log(bst.includes(54));
-bst.insert(44);
 prettyPrint(bst.root);
-console.log(successor(bst.root));
+//console.log(bst.includes(73));
+//console.log(bst.includes(54));
+// bst.insert(44);
+//prettyPrint(bst.root);
+//console.log(successor(bst.root));
 //bst.deleteItem(bst.root, 55);
-prettyPrint(bst.root);
+//prettyPrint(bst.root);
 const re = bst.levelOrderForEach((x) => {
   return x;
 });
 
+const re2 = bst.inOrderForEach(bst.root, (x) => {
+  return x;
+});
+console.log();
+bst.preOrderForEach(bst.root, (x) => x);
+console.log();
+bst.postOrderForEach(bst.root, (x) => x);
 console.log(re);
