@@ -1,3 +1,5 @@
+import { inspect } from "util";
+
 class Node {
   constructor(data) {
     this.data = data;
@@ -20,22 +22,27 @@ class Subtree {
 
 export class Tree {
   constructor(arr) {
-    this.root = this.buildTree(arr, 0, arr.length - 1);
+    this.root = this.buildTree(arr);
   }
 
-  buildTree(arr, left, right) {
+  buildTree(arr) {
+    const sortedArray = mergeSort(arr);
+    return this.#buildRecursion(sortedArray, 0, sortedArray.length - 1);
+  }
+
+  #buildRecursion(arr, left, right) {
     if (left > right) return null;
 
     const mid = Math.floor((left + right) / 2);
     const root = new Node(arr[mid]);
 
-    root.left = this.buildTree(arr, left, mid - 1);
-    root.right = this.buildTree(arr, mid + 1, right);
+    root.left = this.#buildRecursion(arr, left, mid - 1);
+    root.right = this.#buildRecursion(arr, mid + 1, right);
 
     return root;
   }
 
-  buildTreeQueue() {
+  #buildTreeQueue() {
     let n = this.arr.length;
 
     if (n == 0) return null;
@@ -167,36 +174,70 @@ export class Tree {
     return result;
   }
 
-  inOrderForEach(root, callback, result) {
+  inOrderForEach(callback) {
+    let result = [];
+    this.#inOrder(this.root, callback, result);
+    return result;
+  }
+
+  #inOrder(root, callback, result) {
     if (root === null) {
       return;
     }
-    this.inOrderForEach(root.left, callback, result);
+    this.#inOrder(root.left, callback, result);
     result.push(callback(root.data));
-    this.inOrderForEach(root.right, callback, result);
+    this.#inOrder(root.right, callback, result);
   }
 
-  preOrderForEach(root, callback) {
+  preOrderForEach(callback) {
+    let result = [];
+    this.#preOrder(this.root, callback, result);
+    return result;
+  }
+
+  #preOrder(root, callback, result) {
     if (root === null) {
       return;
     }
-    console.log(callback(root.data));
-    this.preOrderForEach(root.left, callback);
-    this.preOrderForEach(root.right, callback);
+    result.push(callback(root.data));
+    this.#preOrder(root.left, callback, result);
+    this.#preOrder(root.right, callback, result);
   }
 
-  postOrderForEach(root, callback) {
+  postOrderForEach(callback) {
+    let result = [];
+    this.#postOrder(this.root, callback, result);
+    return result;
+  }
+
+  #postOrder(root, callback, result) {
     if (root === null) {
       return;
     }
-    this.postOrderForEach(root.left, callback);
-    this.postOrderForEach(root.right, callback);
-    console.log(callback(root.data));
+    this.#postOrder(root.left, callback, result);
+    this.#postOrder(root.right, callback, result);
+    result.push(callback(root.data));
+  }
+
+  isBalanced() {
+    return this.#isBalancedRecursive(this.root);
+  }
+
+  #isBalancedRecursive(root) {
+    if (root === null) return true;
+    let lh = calcHeight(root.left);
+    let rh = calcHeight(root.right);
+    if (Math.abs(lh - rh) > 1) {
+      return false;
+    }
+    return (
+      this.#isBalancedRecursive(root.left) &&
+      this.#isBalancedRecursive(root.right)
+    );
   }
 
   rebalance() {
-    const arr = [];
-    this.inOrderForEach(this.root, (x) => x, arr);
+    const arr = this.inOrderForEach((x) => x);
     this.root = this.buildTree(arr, 0, arr.length - 1);
   }
 }
@@ -232,16 +273,6 @@ function calcHeight(node) {
   return Math.max(lheight, rheight) + 1;
 }
 
-function isBalanced(root) {
-  if (root === null) return true;
-  let lh = calcHeight(root.left);
-  let rh = calcHeight(root.right);
-  if (Math.abs(lh - rh) > 1) {
-    return false;
-  }
-  return isBalanced(root.left) && isBalanced(root.right);
-}
-
 function successor(root) {
   let curr = root.right;
   while (curr.left != null) {
@@ -261,30 +292,70 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
 };
 
-const bst = new Tree([23, 43, 55, 56, 73, 91]);
-const bst2 = new Tree([1, 5, 9, 14, 23, 27]);
-//prettyPrint(bst.root);
-//console.log(bst.includes(73));
-//console.log(bst.includes(54));
-console.log(isBalanced(bst.root));
-bst.insert(44);
-prettyPrint(bst.root);
-//console.log(successor(bst.root));
-//bst.deleteItem(bst.root, 55);
-//prettyPrint(bst.root);
-const res = [];
-bst.inOrderForEach(bst.root, (x) => x, res);
-console.log(res);
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
 
-// const re2 = bst.inOrderForEach(bst.root, (x) => {
-//   return x;
-// });
-// console.log();
-// bst.preOrderForEach(bst.root, (x) => x);
-// console.log();
-// bst.postOrderForEach(bst.root, (x) => x);
-// console.log(re);
-console.log(depth(bst, 43));
-console.log(isBalanced(bst.root));
-bst.rebalance();
-prettyPrint(bst.root);
+function merge(left, right) {
+  const merged = [];
+  let left_pointer = 0;
+  let right_pointer = 0;
+  while (left_pointer < left.length && right_pointer < right.length) {
+    // Loop as long as both pointers point within array
+    if (left[left_pointer] < right[right_pointer]) {
+      // add smaller element to merged array and update corresponding pointer
+      merged.push(left[left_pointer]);
+      left_pointer++;
+    } else {
+      // add smaller element to merged array and update corresponding pointer
+      merged.push(right[right_pointer]);
+      right_pointer++;
+    }
+  }
+  if (left_pointer >= left.length) {
+    // left array exhausted, copy everything remaining from right subarray
+    return merged.concat(right.slice(right_pointer));
+  } else {
+    // right array exhausted, copy everything remaining from left subarray
+    return merged.concat(left.slice(left_pointer));
+  }
+}
+
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  } else {
+    let left = mergeSort(arr.slice(0, Math.floor(arr.length / 2)));
+    let right = mergeSort(arr.slice(Math.floor(arr.length / 2)));
+    return merge(left, right);
+  }
+}
+
+function driver() {
+  const arr = [];
+  for (let i = 0; i < 100; i++) {
+    arr.push(getRandomInt(100));
+  }
+  const bst = new Tree(arr);
+  console.log(bst.isBalanced());
+  console.log(bst.preOrderForEach((x) => x));
+  console.log(bst.postOrderForEach((x) => x));
+  console.log(bst.inOrderForEach((x) => x));
+  bst.insert(105);
+  bst.insert(114);
+  bst.insert(156);
+  bst.insert(127);
+  console.log(bst.isBalanced());
+  bst.rebalance();
+  console.log(bst.isBalanced());
+  console.log(bst.preOrderForEach((x) => x));
+  console.log(bst.postOrderForEach((x) => x));
+  console.log(
+    inspect(
+      bst.inOrderForEach((x) => x),
+      { maxArrayLength: null },
+    ),
+  );
+}
+
+driver();
