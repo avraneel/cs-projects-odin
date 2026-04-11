@@ -211,6 +211,18 @@ function height(root, value) {
   }
 }
 
+function depth(root, value) {
+  const node = root.find(value);
+
+  if (node === undefined) {
+    return undefined;
+  } else {
+    const h = calcHeight(node);
+    const rootHeight = calcHeight(root.root);
+    return rootHeight - h;
+  }
+}
+
 function calcHeight(node) {
   if (node === null) return -1;
 
@@ -272,7 +284,7 @@ console.log(res);
 // console.log();
 // bst.postOrderForEach(bst.root, (x) => x);
 // console.log(re);
-// console.log(height(bst, 55));
+console.log(depth(bst, 43));
 console.log(isBalanced(bst.root));
 bst.rebalance();
 prettyPrint(bst.root);
