@@ -215,7 +215,15 @@ function calcHeight(node) {
   return Math.max(lheight, rheight) + 1;
 }
 
-function isBalanced() {}
+function isBalanced(root) {
+  if (root === null) return true;
+  let lh = calcHeight(root.left);
+  let rh = calcHeight(root.right);
+  if (Math.abs(lh - rh) > 1) {
+    return false;
+  }
+  return isBalanced(root.left) && isBalanced(root.right);
+}
 
 function successor(root) {
   let curr = root.right;
@@ -238,24 +246,27 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const bst = new Tree([23, 43, 55, 56, 73, 91]);
 const bst2 = new Tree([1, 5, 9, 14, 23, 27]);
-prettyPrint(bst.root);
+//prettyPrint(bst.root);
 //console.log(bst.includes(73));
 //console.log(bst.includes(54));
-// bst.insert(44);
-//prettyPrint(bst.root);
+console.log(isBalanced(bst.root));
+bst.insert(44);
+prettyPrint(bst.root);
 //console.log(successor(bst.root));
 //bst.deleteItem(bst.root, 55);
 //prettyPrint(bst.root);
-const re = bst.levelOrderForEach((x) => {
-  return x;
-});
+let res = [];
+// const re = bst.levelOrderForEach((x) => {
+//   return x;
+// });
 
-const re2 = bst.inOrderForEach(bst.root, (x) => {
-  return x;
-});
-console.log();
-bst.preOrderForEach(bst.root, (x) => x);
-console.log();
-bst.postOrderForEach(bst.root, (x) => x);
-console.log(re);
-console.log(height(bst, 55));
+// const re2 = bst.inOrderForEach(bst.root, (x) => {
+//   return x;
+// });
+// console.log();
+// bst.preOrderForEach(bst.root, (x) => x);
+// console.log();
+// bst.postOrderForEach(bst.root, (x) => x);
+// console.log(re);
+// console.log(height(bst, 55));
+console.log(isBalanced(bst.root));
