@@ -130,6 +130,33 @@ export class Tree {
     }
     return root;
   }
+
+  levelOrderForEach(callback) {
+    const result = [];
+    const q = [];
+    q.push(this.root);
+
+    while (q.length) {
+      const curr = q.shift();
+      result.push(callback(curr.data));
+      if (curr.left) {
+        q.push(curr.left);
+      }
+      if (curr.right) {
+        q.push(curr.right);
+      }
+    }
+
+    return result;
+  }
+
+  inOrderForEach(root, callback, result) {
+    if (root.left === null && root.right === null) {
+      return root;
+    }
+
+    this.inOrderForEach(root.left);
+  }
 }
 
 function successor(root) {
@@ -159,5 +186,10 @@ console.log(bst.includes(54));
 bst.insert(44);
 prettyPrint(bst.root);
 console.log(successor(bst.root));
-bst.deleteItem(bst.root, 55);
+//bst.deleteItem(bst.root, 55);
 prettyPrint(bst.root);
+const re = bst.levelOrderForEach((x) => {
+  return x;
+});
+
+console.log(re);
