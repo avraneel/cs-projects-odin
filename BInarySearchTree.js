@@ -85,8 +85,26 @@ export class Tree {
         curr = curr.right;
       }
     }
-
     return false;
+  }
+
+  /**
+   * @description Searches the value in the BST and returns the Node object,
+   * else returns undefined
+   */
+  find(value) {
+    let curr = this.root;
+
+    while (curr !== null) {
+      if (curr.data === value) {
+        return curr;
+      } else if (value < curr.data) {
+        curr = curr.left;
+      } else if (value > curr.data) {
+        curr = curr.right;
+      }
+    }
+    return undefined;
   }
 
   insert(value) {
@@ -178,6 +196,27 @@ export class Tree {
   }
 }
 
+function height(root, value) {
+  const node = root.find(value);
+
+  if (node === undefined) {
+    return undefined;
+  } else {
+    return calcHeight(node);
+  }
+}
+
+function calcHeight(node) {
+  if (node === null) return -1;
+
+  let lheight = calcHeight(node.left);
+  let rheight = calcHeight(node.right);
+
+  return Math.max(lheight, rheight) + 1;
+}
+
+function isBalanced() {}
+
 function successor(root) {
   let curr = root.right;
   while (curr.left != null) {
@@ -219,3 +258,4 @@ bst.preOrderForEach(bst.root, (x) => x);
 console.log();
 bst.postOrderForEach(bst.root, (x) => x);
 console.log(re);
+console.log(height(bst, 55));
