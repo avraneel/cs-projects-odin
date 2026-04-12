@@ -43,14 +43,13 @@ function genAdjList() {
  * @param s [x,y] vertex
  * @param graph Adjacency List
  */
-function bfs(source, graph) {
-  const visited = new Array(64).fill(Infinity);
+function bfs(source, graph, par, dist) {
   const res = [];
   const q = [];
 
   // Initialize root node
   q.push(source);
-  visited[flatIndex(source[0], source[1])] = 1;
+  dist[flatIndex(source[0], source[1])] = 0;
 
   while (q.length > 0) {
     let node = q.shift();
@@ -60,9 +59,10 @@ function bfs(source, graph) {
     for (let j = 0; j < graph[ind].length; j++) {
       let neighbour = graph[ind][j];
       let neighbourIndex = flatIndex(neighbour[0], neighbour[1]);
-      if (visited[neighbourIndex] == Infinity) {
+      if (dist[neighbourIndex] == Infinity) {
         q.push(neighbour);
-        visited[neighbourIndex] = 1;
+        par[neighbourIndex] = node;
+        dist[neighbourIndex] = dist[ind] + 1;
       }
     }
   }
@@ -70,8 +70,30 @@ function bfs(source, graph) {
   return res;
 }
 
+function getPath(source, graph, dest) {
+  const par = Array(64).fill([-1, -1]);
+  const dist = Array(64).fill(Infinity);
+
+  bfs(source, graph, par, dist);
+
+  if (dist[dest] === Infinity) {
+    console.log("Source and Destination are not connected");
+  }
+
+  const path = [];
+  let curr = dest;
+
+  while (
+    par[flatIndex(curr[0], curr[1])][0] !== -1 &&
+    par[flatIndex(curr[0], curr[1])][0] !== -1
+  ) {
+    path.push(par[flatIndex(curr[0], curr[1])]);
+    curr = par[flatIndex(curr[0], curr[1])];
+  }
+
+  const pathString = path.reverse().join(" ");
+  console.log(pathString);
+}
+
 const board = genAdjList();
-console.log(board[flatIndex(3, 3)]);
-const path = bfs([3, 3], board);
-console.log(path);
-console.log(path.length);
+console.log(getPath([3, 3], board, [4, 3]));
